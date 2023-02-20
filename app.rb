@@ -13,6 +13,8 @@ set :database, { adapter: "sqlite3", database: "leprosorium.db" }
 
 class Post < ActiveRecord::Base
   has_many :comments, dependent: :destroy
+  validates :user, presence: true
+  validates :content, presence: true
 end
 
 class Comment < ActiveRecord::Base
@@ -20,52 +22,49 @@ class Comment < ActiveRecord::Base
 end
 
 before do
+  #@results = Post.all
 end
 
 get '/' do
-  @results = @db.execute 'select * from Posts order by id desc'
+  @results = Post.order "created_at DESC"
   erb :index
 end
 
 get '/new' do
+  @post = Post.new
   erb :new
 end
 
 post '/new' do
-  @content = params[:content]
-  @username = params[:username]
-
-  hh = {
-    :username => 'Type username',
-    :content => 'Type content'
-  }
-
-  @error = hh.select { |key,value| params[key] == ''}.values.join(", ")
-
-  if @error != ''
-    return erb :new
+  @post = Post.new params[:post]
+  if @post.save
+    erb "<h2>Your post was successfully sent</h2>"
+  else
+    @error = @post.errors.full_messages.first
+    erb :new
   end
-
-  @db.execute 'insert into Posts
-  (
-    username,
-    content,
-    created_date
-  )
-  values(?,?,datetime())', [@username, @content]
-  redirect to '/'
 end
 
 get '/details/:post_id' do
-  post_id = params[:post_id] # parameter from url
+  #id = params[:post_id] # parameter from url
+  @row = Post.find(params[:post_id])
+  begin
+    @comments = Comment.find(params[:post_id])
+  rescue ActiveRecord::RecordNotFound => e
+    @comments = []
+  end
+  erb :details
+=begin
   results = @db.execute 'select * from Posts where id = ?', [post_id]
     @row = results[0]
     @comments = @db.execute 'select * from Comments where post_id = ? order by id', [post_id]
     @error = params[:error]
     erb :details
+=end
 end
 
 post '/details/:post_id' do
+
   @post_id = params[:post_id]
   @comment = params[:comment]
 

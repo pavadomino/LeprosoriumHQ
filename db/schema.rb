@@ -23,7 +23,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_20_202243) do
   create_table "posts", force: :cascade do |t|
     t.text "user"
     t.text "content"
-    t.datetime "create_date"
+    t.datetime "created_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
