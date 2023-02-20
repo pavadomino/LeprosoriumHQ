@@ -2,10 +2,19 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
-
+require 'sintara/activerecord'
+=begin
 def init_db
   @db = SQLite3::Database.new 'leprosorium.db'
   @db.results_as_hash = true
+end
+=end
+set :database, { adapter: sqlite3, database: leprosorium.db }
+
+class Post < ActiveRecord
+end
+
+class Comment < ActiveRecord
 end
 
 before do
