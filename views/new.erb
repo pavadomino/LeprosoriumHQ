@@ -1,0 +1,16 @@
+<h2>Add post</h2>
+
+<form action="/new" method="POST" role="form">
+  <br/>
+  <div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Username</label>
+    <input name="username" type="text" class="form-control" placeholder="Username" value="<%= @username %>">
+  </div>
+  <br/>
+  <div class="mb-3">
+    <label for="exampleFormControlInput1" class="form-label">Post text</label>
+    <textarea name="content" class="form-control" id="exampleFormControlTextarea1" placeholder="Type post text here" rows="6"></textarea>
+    <br/>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
