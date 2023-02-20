@@ -42,10 +42,10 @@ post '/new' do
 end
 
 get '/details/:post_id' do
-  #id = params[:post_id] # parameter from url
+  #@id = params[:post_id] # parameter from url
   @row = Post.find(params[:post_id])
   begin
-    @comments = Comment.where("post_id = ?", params[:post_id])
+    @comments = @row.comments.all #.where("post_id = ?", params[:post_id])
   rescue ActiveRecord::RecordNotFound => e
     @comments = []
   end
@@ -53,16 +53,15 @@ get '/details/:post_id' do
 end
 
 post '/details/:post_id' do
-  @comment = Comment.new
-  @comment.post_id = params[:post_id]
+  @row = Post.find(params[:post_id])
+  @comment = @row.comments.new
   @comment.content = params[:comment]
   if @comment.save
     redirect to('/details/' + params[:post_id])
   else
     @error = @comment.errors.full_messages.first
-    @row = Post.find(params[:post_id])
     begin
-      @comments = Comment.where("post_id = ?", params[:post_id])
+      @comments = @row.comments.all # # # .where("post_id = ?", params[:post_id])
     rescue ActiveRecord::RecordNotFound => e
       @comments = []
     end
