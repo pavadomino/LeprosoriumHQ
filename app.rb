@@ -2,41 +2,24 @@ require 'rubygems'
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
-require 'sintara/activerecord'
+require 'sinatra/activerecord'
 =begin
 def init_db
   @db = SQLite3::Database.new 'leprosorium.db'
   @db.results_as_hash = true
 end
 =end
-set :database, { adapter: sqlite3, database: leprosorium.db }
+set :database, { adapter: "sqlite3", database: "leprosorium.db" }
 
-class Post < ActiveRecord
+class Post < ActiveRecord::Base
+  has_many :comments, dependent: :destroy
 end
 
-class Comment < ActiveRecord
+class Comment < ActiveRecord::Base
+  belongs_to :post
 end
 
 before do
-  init_db
-end
-
-configure do
-  init_db
-  @db.execute 'CREATE TABLE IF NOT EXISTS Posts
-  (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    created_date DATE,
-    content TEXT
-  )'
-  @db.execute 'CREATE TABLE IF NOT EXISTS Comments
-  (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_date DATE,
-    content TEXT,
-    post_id INTEGER
-  )'
 end
 
 get '/' do
